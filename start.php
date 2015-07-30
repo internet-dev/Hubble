@@ -40,5 +40,6 @@ include_once(WORK_PATH . '/library/Autoload.php');
 $srv = new App\Server(array());
 $srv->run();
 
+//\SeasLog::info(sprintf('启动完成: %s', date('Y-m-d H:i:s')));
 /* vi:set ts=4 sw=4 et fdm=marker: */
 
