@@ -13,6 +13,7 @@ class ErrorCode
     const CONF_FILE_NOT_EXIST = 2;
 
     const LOST_REQUIRED_PARAMETERS          = 400101;
+    const CAN_NOT_CONNECT_REDIS             = 400102;
 
     private static $message_conf = array(
         self::ERROR_UNKNOWN => '未知错误',
@@ -21,6 +22,7 @@ class ErrorCode
         self::CONF_FILE_NOT_EXIST => '配置文件不存在',
 
         self::LOST_REQUIRED_PARAMETERS      => '缺少必要参数',
+        self::CAN_NOT_CONNECT_REDIS         => '无法连接 redis',
     );
 
     public static function getMessage($code)
