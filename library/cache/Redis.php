@@ -37,12 +37,15 @@ class Redis
         }
         return $this;
     }
-    public function setField($field) {
+
+    public function setField($field)
+    {
         if ($field) {
             $this->field = $field;
         }
         return $this;
     }
+
     public function setExpire($expire)
     {
         if ($expire) {
@@ -50,12 +53,15 @@ class Redis
         }
         return $this;
     }
-    public function setLength($length){
+
+    public function setLength($length)
+    {
         if ($length) {
             $this->length = $length;
         }
         return $this;
     }
+
     public function setData($data)
     {
         $this->data = $data;
@@ -70,12 +76,11 @@ class Redis
     {
         $key = $this->key;
         if (!is_array($key)) {
-            $data = ($this->prefix ==null?'':':') . $key;
+            $data = ($this->prefix == null ? '' : ':') . $key;
         } else {
             $data = array ();
             foreach ($key as $row) {
-                //$data[$row] = $this->prefix . ':' . $row;
-            	$data[$row] = ($this->prefix ==null?'':':') . $key;
+                $data[$row] = ($this->prefix == null ? '' : ':') . $key;
             }
         }
         return $data;
@@ -85,7 +90,7 @@ class Redis
     {
         $key = $this->getKey();
         if (empty($key)) {
-            return null;
+            return false;
         }
         try {
             if (!is_array($key)) {
@@ -95,7 +100,7 @@ class Redis
             }
         } catch (\Exception $ex) {
             $this->exception = $ex;
-            return null;
+            return false;
         }
         return $result;
     }
@@ -107,10 +112,11 @@ class Redis
         if (empty($key)) {
             return false;
         }
+
         try {
             if (!is_array($key)) {
                 if($expire!=0){
-                    $result = $this->getMasterConnection()->set($key, $this->data,$expire);
+                    $result = $this->getMasterConnection()->set($key, $this->data, $expire);
                 } else{
                     $result = $this->getMasterConnection()->set($key, $this->data);
                 }
@@ -138,6 +144,7 @@ class Redis
         if (empty($key)) {
             return false;
         }
+
         try {
             if (is_array($key)) {
                 $result = array ();
@@ -160,6 +167,7 @@ class Redis
         if (empty($key)) {
             return false;
         }
+
         try {
             return $this->getSlaveConnection()->lrange($key, $start, $end);
         } catch (\Exception $ex) {
@@ -174,6 +182,7 @@ class Redis
         if (empty($key)) {
             return false;
         }
+
         try {
             return $this->getMasterConnection()->lPush($key, $this->data);
         } catch (\Exception $ex) {
@@ -188,6 +197,7 @@ class Redis
         if (empty($key)) {
             return false;
         }
+
         try {
             return $this->getMasterConnection()->ltrim($key, $start, $end);
         } catch (\Exception $ex) {
@@ -199,30 +209,32 @@ class Redis
 
     public function rPush()
     {
-    	$key = $this->getKey();
-    	if (empty($key)) {
-    		return false;
-    	}
-    	try {
-    		return $this->getMasterConnection()->rPush($key, $this->data);
-    	} catch (\Exception $ex) {
-    		$this->exception = $ex;
-    		return false;
-    	}
+        $key = $this->getKey();
+        if (empty($key)) {
+            return false;
+        }
+
+        try {
+            return $this->getMasterConnection()->rPush($key, $this->data);
+        } catch (\Exception $ex) {
+            $this->exception = $ex;
+            return false;
+        }
     }
 
     public function lPop()
     {
-    	$key = $this->getKey();
-    	if (empty($key)) {
-    		return false;
-    	}
-    	try {
-    		return $this->getMasterConnection()->lPop($key);
-    	} catch (\Exception $ex) {
-    		$this->exception = $ex;
-    		return false;
-    	}
+        $key = $this->getKey();
+        if (empty($key)) {
+            return false;
+        }
+
+        try {
+            return $this->getMasterConnection()->lPop($key);
+        } catch (\Exception $ex) {
+            $this->exception = $ex;
+            return false;
+        }
     }
 
     public function rPop()
@@ -231,6 +243,7 @@ class Redis
         if (empty($key)) {
             return false;
         }
+
         try {
             return $this->getMasterConnection()->rPop($key);
         } catch (\Exception $ex) {
@@ -245,6 +258,7 @@ class Redis
         if (empty($key)) {
             return false;
         }
+
         try {
             return $this->getSlaveConnection()->lLen($key);
         } catch (\Exception $ex) {
@@ -259,6 +273,7 @@ class Redis
         if (empty($key)) {
             return false;
         }
+
         try {
             return $this->getMasterConnection()->incr($key, $value);
         } catch (\Exception $ex) {
@@ -273,6 +288,7 @@ class Redis
         if (empty($key)) {
             return false;
         }
+
         try {
             return $this->getMasterConnection()->decr($key, intval($value));
         } catch (\Exception $ex) {
@@ -287,6 +303,7 @@ class Redis
         if (empty($key)) {
             return false;
         }
+
         try {
             return $this->getMasterConnection()->delete($key);
         } catch (\Exception $ex) {
@@ -295,7 +312,8 @@ class Redis
         }
     }
 
-    public function hdel() {
+    public function hdel()
+    {
         $key = $this->getKey();
         if (empty($key)) {
             return false;
@@ -304,14 +322,17 @@ class Redis
         if (empty($field)) {
             return false;
         }
+
         try {
-            return $this->getMasterConnection()->hDel($key,$field);
+            return $this->getMasterConnection()->hDel($key, $field);
         } catch (\Exception $ex) {
             $this->exception = $ex;
             return false;
         }
     }
-    public function hset() {
+
+    public function hset()
+    {
         $key = $this->getKey();
         if (empty($key)) {
             return false;
@@ -320,15 +341,18 @@ class Redis
         if (empty($field)) {
             return false;
         }
+
         $data = $this->data;
         try {
-            return $this->getMasterConnection()->hSet($key,$field,$data);
+            return $this->getMasterConnection()->hSet($key, $field, $data);
         } catch (\Exception $ex) {
             $this->exception = $ex;
             return false;
         }
     }
-    public function hget() {
+
+    public function hget()
+    {
         $key = $this->getKey();
         if (empty($key)) {
             return false;
@@ -337,6 +361,7 @@ class Redis
         if (empty($field)) {
             return false;
         }
+
         try {
             return $this->getMasterConnection()->hGet($key, $field);
         } catch(\Exception $ex) {
@@ -344,7 +369,9 @@ class Redis
             return false;
         }
     }
-    public function hincr() {
+
+    public function hincr()
+    {
         $key = $this->getKey();
         if (empty($key)) {
             return false;
@@ -353,6 +380,7 @@ class Redis
         if (empty($field)) {
             return false;
         }
+
         try {
             return $this->getMasterConnection()->hIncrBy($key, $field, 1);
         } catch (\Exception $ex) {
@@ -360,7 +388,9 @@ class Redis
             return false;
         }
     }
-    public function hdecr() {
+
+    public function hdecr()
+    {
         $key = $this->getKey();
         if (empty($key)) {
             return false;
@@ -369,6 +399,7 @@ class Redis
         if (empty($field)) {
             return false;
         }
+
         try {
             return $this->getMasterConnection()->hIncrBy($key, $field, -1);
         } catch (\Exception $ex) {
@@ -376,7 +407,9 @@ class Redis
             return false;
         }
     }
-    public function zadd(){
+
+    public function zadd()
+    {
         $key = $this->getKey();
         if (empty($key)) {
             return false;
@@ -385,16 +418,18 @@ class Redis
         if (empty($field)) {
             return false;
         }
+
         $data = $this->data;
         try {
-            return $this->getMasterConnection()->zAdd($key,$field,$data);
+            return $this->getMasterConnection()->zAdd($key, $field, $data);
         } catch (\Exception $ex) {
             $this->exception = $ex;
             return false;
         }
     }
 
-    public function zrevrang() {
+    public function zrevrang()
+    {
         $key = $this->getKey();
         if (empty($key)) {
             return false;
@@ -403,14 +438,17 @@ class Redis
         if (empty($length)) {
             return false;
         }
+
         try {
-            return $this->getMasterConnection()->zrevrange($key,0,$length);
+            return $this->getMasterConnection()->zrevrange($key, 0, $length);
         } catch(\Exception $ex) {
             $this->exception = $ex;
             return false;
         }
     }
-    public function zscore() {
+
+    public function zscore()
+    {
         $key = $this->getKey();
         if (empty($key)) {
             return false;
@@ -419,8 +457,9 @@ class Redis
         if (empty($field)) {
             return false;
         }
+
         try {
-            return $this->getMasterConnection()->zScore($key,$field);
+            return $this->getMasterConnection()->zScore($key, $field);
         } catch(\Exception $ex) {
             $this->exception = $ex;
             return false;
@@ -473,14 +512,14 @@ class Redis
         return $redis;
     }
 
-
     /**
      *
      * @param type $num
      * @param flag 1主库 0从库
      */
-    public function selectDb($num=0,$isMaster=true){
-        if($isMaster){
+    public function selectDb($num = 0, $isMaster = true)
+    {
+        if ($isMaster) {
             $this->getMasterConnection()->select($num);
         } else{
             $this->getSlaveConnection()->select($num);
@@ -488,8 +527,11 @@ class Redis
 
         return $this;
     }
-    public function expire($time = 0) {
+
+    public function expire($time = 0)
+    {
         $rtn = $this->getMasterConnection()->expire($this->key, $time);
         return $rtn;
     }
 }
+
